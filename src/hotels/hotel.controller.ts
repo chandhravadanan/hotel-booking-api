@@ -1,13 +1,4 @@
-import {
-  BadRequestException,
-  Body,
-  Controller,
-  Get,
-  Param,
-  Post,
-  Query,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { BookingService } from '../booking';
 import { GoogleMapsService } from '../google-maps';
 import { CreateBookingInput } from './input/create-booking';
@@ -15,6 +6,7 @@ import { HotelService } from './hotel.service';
 import { ApiBody, ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { GuestService } from '../guest';
 import { HotelGuard } from './guards/hotel.guard';
+import { QueryRequired } from './decorators';
 
 @Controller()
 export class HotelController {
@@ -44,13 +36,9 @@ export class HotelController {
     description: 'longitude',
   })
   async addHotels(
-    @Query('latitude') latitude: number,
-    @Query('longitude') longitude: number,
+    @QueryRequired('latitude') latitude: number,
+    @QueryRequired('longitude') longitude: number,
   ) {
-    if (!latitude || !longitude) {
-      throw new BadRequestException('Invalid inputs');
-    }
-
     const hotelsInfo = await this.googleMapsService.getHotels(
       latitude,
       longitude,
@@ -80,12 +68,9 @@ export class HotelController {
     description: 'longitude',
   })
   async getHotels(
-    @Query('latitude') latitude: number,
-    @Query('longitude') longitude: number,
+    @QueryRequired('latitude') latitude: number,
+    @QueryRequired('longitude') longitude: number,
   ) {
-    if (!latitude || !longitude) {
-      throw new BadRequestException('Invalid inputs');
-    }
     return this.hotelsService.findAll({
       longitude,
       latitude,

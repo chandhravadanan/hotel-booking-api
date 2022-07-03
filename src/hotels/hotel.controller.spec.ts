@@ -35,4 +35,8 @@ describe('HotelsController', () => {
   it('should be defined', () => {
     expect(controller).toBeDefined();
   });
+
+  it('should throw error for invalid latitude & longitude', async () => {
+    controller.getHotels(0, 0);
+  });
 });
