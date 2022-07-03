@@ -14,13 +14,23 @@ export class IsDateConstraint implements ValidatorConstraintInterface {
     }
 
     const date = new Date(propertyValue);
-    return (
-      date.getTime() > 0 && date.toISOString().slice(0, 10) === propertyValue
-    );
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    // check for valid future date
+    if (
+      date.getTime() < 0 ||
+      date.toISOString().slice(0, 10) !== propertyValue ||
+      today > date
+    ) {
+      return false;
+    }
+
+    return true;
   }
 
   defaultMessage(args: ValidationArguments) {
-    return `"${args.property}" must be valid date in yyyy-mm-dd"`;
+    return `"${args.property}" must be valid future date in yyyy-mm-dd"`;
   }
 }
 
